@@ -142,6 +142,12 @@ function uploadPhoto (index, input) {
     var data = this
     var metadata = EXIF.getAllTags(data)
 
+    var $metadata = $('.js-image-metadata')
+    $metadata.empty()
+    for (var key in metadata) {
+      $metadata.append($('<div>' + key + ': ' + metadata[key] + '</div>'))
+    }
+
     var reader = new FileReader()
     reader.onload = function (e) {
       var image = new Image()
@@ -155,75 +161,68 @@ function uploadPhoto (index, input) {
       var context = canvas.getContext('2d')
 
       var ratio = Math.min(500 / image.width, 500 / image.height)
-
       canvas.width = image.width * ratio
       canvas.height = image.height * ratio
 
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
 
-      $.getJSON('/signed_url?name=' + encodeURIComponent(file.name) + '&content_type=' + encodeURIComponent(file.type), function (data) {
-        var url = data.signed_url
-        var xhr = createCORSRequest('PUT', url)
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            console.log('uploaded!')
-          } else {
-            console.log('Failed to upload file to S3')
-          }
-        }
-
-        xhr.onerror = function () {
-          console.log('Failed to upload file to S3')
-        }
-
-        xhr.setRequestHeader('Content-Type', file.type)
-        xhr.send(file)
-
-        $('.js-current-image p').text(
-          'Image ' + (index + 1)
-        )
-
-        var $metadata = $('.js-image-metadata')
-        $metadata.empty()
-        for (var key in metadata) {
-          $metadata.append($('<div>' + key + ': ' + metadata[key] + '</div>'))
-        }
-
-        image = null
-
-        uploadPhoto(index + 1, input)
+      uploadFile(file.name, file.type, file, function () {
+        var thumbnail = dataURLtoBlob(canvas.toDataURL('image/png'))
+        uploadFile('thumbnail-' + file.name, file.type, thumbnail, function () {
+          uploadPhoto(index + 1, input)
+          image = null
+        })
       })
     }
 
     reader.readAsDataURL(file)
   })
 }
+
+function uploadFile (name, contentType, content, callback) {
+  $.getJSON('/signed_url?name=' + encodeURIComponent(name) + '&content_type=' + encodeURIComponent(contentType), function (data) {
+    var xhr = createCORSRequest('PUT', data.signed_url)
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log('uploaded!')
+        callback()
+      } else {
+        console.log('Failed to upload file to S3')
+      }
+    }
+    xhr.onerror = function () {
+      console.log('Failed to upload file to S3')
+    }
+    xhr.setRequestHeader('Content-Type', contentType)
+    xhr.send(content)
+  })
+}
 // var prefsize
 
-// function dataURLtoBlob (dataURL) {
-//   var BASE64_MARKER = ';base64,'
-//   if (dataURL.indexOf(BASE64_MARKER) === -1) {
-//     var parts = dataURL.split(',')
-//     var contentType = parts[0].split(':')[1]
-//     var raw = decodeURIComponent(parts[1])
+function dataURLtoBlob (dataURL) {
+  var BASE64_MARKER = ';base64,'
+  if (dataURL.indexOf(BASE64_MARKER) === -1) {
+    var parts = dataURL.split(',')
+    var contentType = parts[0].split(':')[1]
+    var raw = decodeURIComponent(parts[1])
 
-//     return new Blob([raw], {
-//       type: contentType
-//     })
-//   }
-//   var parts = dataURL.split(BASE64_MARKER)
-//   var contentType = parts[0].split(':')[1]
-//   var raw = window.atob(parts[1])
-//   var rawLength = raw.length
-//   var uInt8Array = new Uint8Array(rawLength)
-//   for (var i = 0; i < rawLength; ++i) {
-//     uInt8Array[i] = raw.charCodeAt(i)
-//   }
+    return new Blob([raw], {
+      type: contentType
+    })
+  }
+  var parts = dataURL.split(BASE64_MARKER)
+  var contentType = parts[0].split(':')[1]
+  var raw = window.atob(parts[1])
+  var rawLength = raw.length
+  var uInt8Array = new Uint8Array(rawLength)
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i)
+  }
 
-//   return new Blob ([uInt8Array], {
-//     type: contentType
-//   })
-// }
+  return new Blob ([uInt8Array], {
+    type: contentType
+  })
+}
 
 // function validateImage () {
 // }
