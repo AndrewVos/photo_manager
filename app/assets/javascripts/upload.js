@@ -59,11 +59,18 @@ function uploadPhoto (index, input) {
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
 
       $.getJSON('/signed_url?content_type=' + encodeURIComponent(file.type), function (data) {
-        uploadFile(data.original_name, data.original_url, file.type, file, function () {
+        uploadFile(data.original_url, file.type, file, function () {
           var thumbnail = dataURLtoBlob(canvas.toDataURL('image/png'))
-          uploadFile(data.thumbnail_name, data.thumbnail_url, file.type, thumbnail, function () {
-            uploadPhoto(index + 1, input)
-            image = null
+          uploadFile(data.thumbnail_url, file.type, thumbnail, function () {
+            $.ajax({
+              type: 'POST',
+              url: '/photos/' + data.id + '/complete',
+              contentType: 'application/json',
+              success: function () {
+                uploadPhoto(index + 1, input)
+                image = null
+              }
+            })
           })
         })
       })

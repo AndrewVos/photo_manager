@@ -1,11 +1,12 @@
 class SignedUrlController < ApplicationController
   def signed_url
-    image = current_user.images.create!
+    photo = current_user.photos.create!
 
-    original_name = "#{current_user.id}-#{image.id}"
-    thumbnail_name = "#{current_user.id}-#{image.id}-thumbnail"
+    original_name = "#{current_user.id}-#{photo.id}"
+    thumbnail_name = "#{current_user.id}-#{photo.id}-thumbnail"
 
     render json: {
+      id: photo.id,
       original_name: original_name,
       thumbnail_name: thumbnail_name,
       original_url: create_signed_url(original_name, params[:content_type]),

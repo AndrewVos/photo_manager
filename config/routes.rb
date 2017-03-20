@@ -5,5 +5,7 @@ Rails.application.routes.draw do
 
   get '/signed_url', to: 'signed_url#signed_url'
 
-  resources :photos, only: %i(index)
+  resources :photos, only: %i(index) do
+    post 'complete'
+  end
 end

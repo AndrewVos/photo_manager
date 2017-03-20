@@ -11,6 +11,14 @@
       <div class="js-upload-progress">
       </div>
 
+
+      <div class="photos">
+        <% @photos.each do |photo| %>
+          <% if photo.thumbnail_url %>
+            <%= image_tag photo.thumbnail_url %>
+          <% end %>
+        <% end %>
+      </div>
       <div class="js-current-image">
         <p>
         </p>

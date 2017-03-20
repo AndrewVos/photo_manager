@@ -15,10 +15,12 @@ ActiveRecord::Schema.define(version: 20170320195313) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "images", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "photos", force: :cascade do |t|
+    t.integer  "user_id",       null: false
+    t.string   "thumbnail_url"
+    t.string   "original_url"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "users", force: :cascade do |t|
