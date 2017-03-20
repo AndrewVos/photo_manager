@@ -1,0 +1,16 @@
+<div class="container">
+  <div clas="row">
+    <div class="col-xs-12">
+      <h2>Sign up</h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), layout: :basic) do |f| %>
+        <%= f.email_field :email, autofocus: true %>
+        <%= f.password_field :password, autocomplete: "off" %>
+        <%= f.password_field :password_confirmation, autocomplete: "off" %>
+        <%= f.submit "Sign up" %>
+      <% end %>
+
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>
