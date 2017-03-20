@@ -23,12 +23,37 @@ function createCORSRequest (method, url) {
   return xhr
 }
 
+function updateProgressBarTitle (title) {
+  var $uploadProgress = $('.js-upload-progress')
+  $uploadProgress.find('.js-progress-title').text(
+    title
+  )
+}
+
+function updateProgressBar (percentage) {
+  var $uploadProgress = $('.js-upload-progress')
+  $uploadProgress.find('.js-progress').text(
+    percentage + '%'
+  )
+  $uploadProgress.find('.js-progress').css('width', percentage + '%')
+
+  $uploadProgress.removeClass('hidden')
+  $uploadProgress.show()
+}
+
+function hideProgressBar () {
+  $('.js-upload-progress').fadeOut('slow')
+}
+
 function uploadPhoto (index, input) {
   if (index === input.files.length) {
+    hideProgressBar()
     return
   }
 
   var file = input.files[index]
+
+  updateProgressBarTitle('Uploading ' + (index + 1) + ' of ' + input.files.length)
 
   EXIF.getData(file, function () {
     var data = this
@@ -67,6 +92,7 @@ function uploadPhoto (index, input) {
               url: '/photos/' + data.id + '/complete',
               contentType: 'application/json',
               success: function () {
+                console.log('uploaded: ' + data.original_name)
                 uploadPhoto(index + 1, input)
                 image = null
               }
@@ -84,15 +110,19 @@ function uploadFile (url, contentType, content, callback) {
   var xhr = createCORSRequest('PUT', url)
   xhr.onload = function () {
     if (xhr.status === 200) {
-      console.log('uploaded!')
       callback()
     } else {
       console.log('Failed to upload file to S3')
     }
   }
+  xhr.upload.onprogress = function(e) {
+    var percentage = Math.round((e.loaded / e.total) * 100)
+    updateProgressBar(percentage)
+  }
   xhr.onerror = function () {
     console.log('Failed to upload file to S3')
   }
+
   xhr.setRequestHeader('Content-Type', contentType)
   xhr.send(content)
 }
