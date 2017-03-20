@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Your photos</h1>
+
+      <%= file_field_tag :files, multiple: true, class: 'js-file-upload hidden' %>
+
+      <button class="btn btn-success js-upload">
+        Upload
+      </button>
+      <div class="js-upload-progress">
+      </div>
+
+      <div class="js-current-image">
+        <p>
+        </p>
+      </div>
+      <div class="js-image-metadata">
+      </div>
+      <div class="js-image">
+      </div>
+
+    </div>
+  </div>
+</div>
