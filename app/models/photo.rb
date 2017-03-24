@@ -9,11 +9,30 @@ class Photo < ApplicationRecord
     "#{user.id}-#{id}-thumbnail"
   end
 
-  def retrieve_urls!
-    update!(
-      thumbnail_url: bucket.file(thumbnail_name).signed_url,
-      original_url: bucket.file(original_name).signed_url
-    )
+  def thumbnail_url
+    signed_url(thumbnail_name)
+  end
+
+  def original_url
+    signed_url(original_name)
+  end
+
+  def storage_configuration
+    @keyfile ||= JSON.parse(ENV.fetch('GOOGLE_CLOUD_KEYFILE_JSON'))
+  end
+
+  def signed_url(name)
+    full_path = "/#{ENV.fetch('GOOGLE_CLOUD_STORAGE_BUCKET')}/#{name}"
+    expiration = 5.minutes.from_now.to_i
+
+    signature = ['GET', '', '', expiration, full_path].join("\n")
+
+    digest = OpenSSL::Digest::SHA256.new
+    signer = OpenSSL::PKey::RSA.new(storage_configuration['private_key'])
+    signature = Base64.strict_encode64(signer.sign(digest, signature))
+    signature = CGI.escape(signature)
+
+    "https://storage.googleapis.com#{full_path}?GoogleAccessId=#{storage_configuration['client_email']}&Expires=#{expiration}&Signature=#{signature}"
   end
 
   private

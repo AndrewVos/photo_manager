@@ -1,6 +1,6 @@
 class SignedUrlController < ApplicationController
   def signed_url
-    photo = current_user.photos.create!
+    photo = current_user.photos.create!(complete: false)
 
     original_name = "#{current_user.id}-#{photo.id}"
     thumbnail_name = "#{current_user.id}-#{photo.id}-thumbnail"
