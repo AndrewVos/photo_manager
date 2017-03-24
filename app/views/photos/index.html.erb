@@ -22,7 +22,9 @@
       <div class="photos">
         <% @photos.each do |photo| %>
           <% if photo.thumbnail_url %>
-            <%= image_tag photo.thumbnail_url %>
+            <%= link_to photo.original_url, target: '_blank' do %>
+              <%= image_tag photo.thumbnail_url %>
+            <% end %>
           <% end %>
         <% end %>
       </div>
