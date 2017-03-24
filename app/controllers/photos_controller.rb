@@ -5,6 +5,9 @@ class PhotosController < ApplicationController
 
   def complete
     photo = current_user.photos.find(params[:photo_id])
-    photo.update(complete: true)
+    photo.update(
+      complete: true,
+      size: params[:size]
+    )
   end
 end

@@ -87,16 +87,17 @@ function uploadPhoto (index, input) {
         uploadFile(data.original_url, file.type, file, function () {
           var thumbnail = dataURLtoBlob(canvas.toDataURL('image/png'))
           uploadFile(data.thumbnail_url, file.type, thumbnail, function () {
-            $.ajax({
-              type: 'POST',
-              url: '/photos/' + data.id + '/complete',
-              contentType: 'application/json',
-              success: function () {
+            $.post(
+              '/photos/' + data.id + '/complete',
+              {
+                size: file.size
+              },
+              function () {
                 console.log('uploaded: ' + data.original_name)
                 uploadPhoto(index + 1, input)
                 image = null
               }
-            })
+            )
           })
         })
       })

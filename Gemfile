@@ -44,6 +44,8 @@ gem 'google-cloud'
 
 gem 'dotenv-rails'
 
+gem 'megabytes'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

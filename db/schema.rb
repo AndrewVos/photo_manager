@@ -16,10 +16,11 @@ ActiveRecord::Schema.define(version: 20170320195313) do
   enable_extension "plpgsql"
 
   create_table "photos", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.boolean  "complete",   null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "user_id",                    null: false
+    t.boolean  "complete",   default: false, null: false
+    t.integer  "size",       default: 0,     null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "users", force: :cascade do |t|

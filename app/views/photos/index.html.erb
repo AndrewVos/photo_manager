@@ -18,6 +18,9 @@
         </div>
       </div>
 
+      <div class="usage">
+        You have used <%= Megabytes.megabytes(@photos.sum(:size)) %>
+      </div>
 
       <div class="photos">
         <% @photos.each do |photo| %>
