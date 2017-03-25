@@ -22,6 +22,19 @@
         You have used <%= Megabytes.megabytes(@photos.sum(:size)) %>
       </div>
 
+      <div class="list-group">
+        <% @models.each do |model| %>
+          <div class="list-group-item">
+            Model: <%= model %>
+          </div>
+        <% end %>
+        <% @years.each do |year| %>
+          <div class="list-group-item">
+            Year: <%= year %>
+          </div>
+        <% end %>
+      </div>
+
       <div class="photos">
         <% @photos.each do |photo| %>
           <% if photo.thumbnail_url %>

@@ -1,6 +1,9 @@
 class Photo < ApplicationRecord
   belongs_to :user
 
+  scope :complete, -> { where(complete: true) }
+  scope :by_date, -> { order(date_time_original: :desc) }
+
   def original_name
     "#{user.id}-#{id}"
   end

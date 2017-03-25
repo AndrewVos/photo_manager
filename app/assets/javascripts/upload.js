@@ -57,13 +57,7 @@ function uploadPhoto (index, input) {
 
   EXIF.getData(file, function () {
     var data = this
-    var metadata = EXIF.getAllTags(data)
-
-    var $metadata = $('.js-image-metadata')
-    $metadata.empty()
-    for (var key in metadata) {
-      $metadata.append($('<div>' + key + ': ' + metadata[key] + '</div>'))
-    }
+    var meta = EXIF.getAllTags(data)
 
     var reader = new FileReader()
     reader.onload = function (e) {
@@ -83,7 +77,7 @@ function uploadPhoto (index, input) {
 
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
 
-      $.post('/photos', { content_type: file.type, size: file.size }, function (data) {
+      $.post('/photos', { photo: { content_type: file.type, size: file.size, meta: meta } }, function (data) {
         uploadFile(data.original_url, file.type, file, function () {
           var thumbnail = dataURLtoBlob(canvas.toDataURL('image/png'))
           uploadFile(data.thumbnail_url, file.type, thumbnail, function () {
