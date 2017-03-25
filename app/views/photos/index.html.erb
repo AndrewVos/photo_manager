@@ -35,15 +35,18 @@
         <% end %>
       </div>
 
-      <div class="photos">
+      <div class="row photos">
         <% @photos.each do |photo| %>
-          <% if photo.thumbnail_url %>
-            <%= link_to photo.original_url, target: '_blank' do %>
-              <%= image_tag photo.thumbnail_url %>
+          <div class="photo col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <% if photo.thumbnail_url %>
+              <%= link_to photo.original_url, target: '_blank' do %>
+                <%= image_tag photo.thumbnail_url, class: 'img-responsive' %>
+              <% end %>
             <% end %>
-          <% end %>
+          </div>
         <% end %>
       </div>
+
       <div class="js-current-image">
         <p>
         </p>
