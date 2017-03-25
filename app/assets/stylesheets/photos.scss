@@ -1,3 +1,4 @@
+$photo-padding: 10px;
 
 .photos {
   .photo {
@@ -5,12 +6,36 @@
   }
 }
 
-.year-border {
-  border: 1px solid #ddd;
-}
+.year-list-group {
+  .year-list-group-item:not(:last-of-type) {
+    margin-bottom: $photo-padding;
+  }
 
-.album-list-group {
-  h2, h3 {
-    display: inline;
+  .year-list-group-item {
+    border: 1px solid #ddd;
+    padding: $photo-padding;
+    display: inline-block;
+
+    h2 {
+      margin: 0;
+      margin-bottom: $photo-padding;
+    }
+
+    .year-list-group-item-child {
+      display: inline-block;
+      border: 1px solid #ddd;
+      padding: $photo-padding;
+      text-align: center;
+
+      h3 {
+        margin: 0;
+        margin-bottom: $photo-padding;
+      }
+
+      img {
+        max-height: 80px;
+        min-height: 80px;
+      }
+    }
   }
 }

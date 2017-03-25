@@ -3,6 +3,15 @@ class PhotosController < ApplicationController
     @photos = current_user.photos.complete.by_date
     @models = @photos.complete.pluck("meta -> 'Model'").uniq
     @years = years
+
+    @year_photos = current_user.photos.complete.select(
+      "DISTINCT ON(year, month) *, date_part('year', date_time_original) AS year, date_part('month', date_time_original) AS month"
+    ).order('year, month, RANDOM()')
+
+    @year_photos = @year_photos.each_with_object({}) do |photo, o|
+      o[photo.date_time_original.year] ||= []
+      o[photo.date_time_original.year] << photo
+    end
   end
 
   def create
