@@ -3,9 +3,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  get '/signed_url', to: 'signed_url#signed_url'
-
-  resources :photos, only: %i(index) do
+  resources :photos, only: %i(index create) do
     post 'complete'
   end
 end

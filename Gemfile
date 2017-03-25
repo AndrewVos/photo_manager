@@ -40,8 +40,6 @@ gem 'devise'
 
 gem 'bh'
 
-gem 'google-cloud'
-
 gem 'dotenv-rails'
 
 gem 'megabytes'

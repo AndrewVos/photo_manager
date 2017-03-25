@@ -83,17 +83,13 @@ function uploadPhoto (index, input) {
 
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
 
-      $.getJSON('/signed_url?content_type=' + encodeURIComponent(file.type), function (data) {
+      $.post('/photos', { content_type: file.type, size: file.size }, function (data) {
         uploadFile(data.original_url, file.type, file, function () {
           var thumbnail = dataURLtoBlob(canvas.toDataURL('image/png'))
           uploadFile(data.thumbnail_url, file.type, thumbnail, function () {
             $.post(
               '/photos/' + data.id + '/complete',
-              {
-                size: file.size
-              },
               function () {
-                console.log('uploaded: ' + data.original_name)
                 uploadPhoto(index + 1, input)
                 image = null
               }
