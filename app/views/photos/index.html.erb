@@ -22,15 +22,24 @@
         You have used <%= Megabytes.megabytes(@photos.sum(:size)) %>
       </div>
 
+      <div class="list-group album-list-group">
+        <% @years.each do |year, months| %>
+          <div class="list-group-item">
+            <h2><%= year %></h2>
+            <% months.each do |month| %>
+              <h3>
+                <%= Date::MONTHNAMES[month] %>
+              </h3>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+
       <div class="list-group">
         <% @models.each do |model| %>
           <div class="list-group-item">
             Model: <%= model %>
-          </div>
-        <% end %>
-        <% @years.each do |year| %>
-          <div class="list-group-item">
-            Year: <%= year %>
           </div>
         <% end %>
       </div>

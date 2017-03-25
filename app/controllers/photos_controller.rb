@@ -1,8 +1,8 @@
 class PhotosController < ApplicationController
   def index
     @photos = current_user.photos.complete.by_date
-    @models = @photos.complete.pluck("meta -> 'Model'").uniq.compact
-    @years = @photos.complete.pluck("date_part('year', date_time_original)").uniq.compact.map(&:round)
+    @models = @photos.complete.pluck("meta -> 'Model'").uniq
+    @years = years
   end
 
   def create
@@ -25,6 +25,17 @@ class PhotosController < ApplicationController
   end
 
   private
+
+  def years
+    dates = @photos.complete.pluck(
+      "date_part('year', date_time_original)",
+      "date_part('month', date_time_original)",
+    ).uniq.each_with_object({}) do |date, o|
+      year, month = date.map(&:to_i)
+      o[year] ||= []
+      o[year] << month
+    end
+  end
 
   def photo_params
     meta_params = params[:photo][:meta].keys
