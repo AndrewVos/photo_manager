@@ -16,3 +16,4 @@
 //= require bootstrap-sprockets
 //= require_tree .
 //= require exif
+//= require mapbox-gl

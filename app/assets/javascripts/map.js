@@ -1,26 +1,27 @@
-function initialiseMap() {
-  var $map = $('.js-map')
-
-  var map;
-  map = new google.maps.Map($map[0], {
-    zoom: 3,
-    center: new google.maps.LatLng(0, 0),
-    mapTypeId: 'roadmap'
-  });
-
-  function addMarker(position) {
-    var marker = new google.maps.Marker({
-      position: new google.maps.LatLng(position.latitude, position.longitude),
-      map: map
-    })
-    google.maps.event.addListener(marker, 'click', function() {
-      console.log('clicked')
-    })
+$(document).on('turbolinks:load', function () {
+  var $map = $('#map')
+  if ($map.length == 0) {
+    return
   }
+  var markerImage = $map.data('marker-icon')
+  var accessToken = $map.data('access-token')
+  var locations = $map.data('markers')
 
-  var positions = $map.data('markers')
+  mapboxgl.accessToken = accessToken
 
-  for (var i = 0; i < positions.length; i++) {
-    addMarker(positions[i]);
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v9'
+  })
+
+  for (var i = 0; i < locations.length; i++) {
+    var $marker = $('<div>')
+    $marker.css('background-image', 'url(' + markerImage + ')')
+    $marker.css('width', '39px')
+    $marker.css('height', '46px')
+
+    var marker = new mapboxgl.Marker($marker[0], { offset: [-14, -43] })
+      .setLngLat([locations[i].longitude, locations[i].latitude])
+      .addTo(map)
   }
-}
+})
