@@ -1,0 +1,4 @@
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=ENV.fetch('GOOGLE_MAPS_KEY')%>&callback=initialiseMap"></script>
+<div class="map-container">
+  <div class="map js-map" data-markers="<%= @locations.to_json %>"></div>
+</div>

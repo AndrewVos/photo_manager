@@ -5,5 +5,8 @@ Rails.application.routes.draw do
 
   resources :photos, only: %i(index create) do
     post 'complete'
+    collection do
+      get 'map'
+    end
   end
 end

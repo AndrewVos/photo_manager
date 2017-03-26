@@ -27,6 +27,12 @@
         </div>
 
         <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav">
+            <% if signed_in? %>
+              <%= active_link_to 'Photos', photos_path, wrap_tag: :li, active: :exact %>
+              <%= active_link_to 'Map', map_photos_path, wrap_tag: :li %>
+            <% end %>
+          </ul>
           <ul class="nav navbar-nav navbar-right">
             <% if signed_in? %>
               <%= active_link_to "Account", edit_user_registration_path, wrap_tag: :li %>
