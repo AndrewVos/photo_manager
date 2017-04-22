@@ -33,22 +33,32 @@ class PhotosController < ApplicationController
     photo.update(complete: true)
   end
 
-  def map
-    @locations = current_user.photos.complete.pluck("meta -> 'GPSLatitudeRef'", "meta -> 'GPSLongitudeRef'", "meta -> 'GPSLatitude'", "meta -> 'GPSLongitude'")
+  def show
+    photo = current_user.photos.find(params[:id])
+    url = params.key?(:thumbnail) ? photo.thumbnail_url : photo.original_url
+    redirect_to url
+  end
 
-    @locations = @locations.map do |location|
-      next if location.compact.size != 4
+  def locations
+    locations = current_user.photos.complete.pluck(:id, "meta -> 'GPSLatitudeRef'", "meta -> 'GPSLongitudeRef'", "meta -> 'GPSLatitude'", "meta -> 'GPSLongitude'")
 
-      latitude_direction, longitude_direction, latitude_dms, longitude_dms = location
+    locations = locations.map do |location|
+      next if location.compact.size != 5
+
+      id, latitude_direction, longitude_direction, latitude_dms, longitude_dms = location
 
       latitude_dms = [latitude_dms['0'], latitude_dms['1'], latitude_dms['2']].map(&:to_f)
       longitude_dms = [longitude_dms['0'], longitude_dms['1'], longitude_dms['2']].map(&:to_f)
 
       {
+        original: photo_path(id),
+        thumbnail: photo_path(id, thumbnail: 1),
         latitude: dms_to_dd(latitude_direction, *latitude_dms),
         longitude: dms_to_dd(longitude_direction, *longitude_dms)
       }
     end.compact
+
+    render json: locations
   end
 
   private

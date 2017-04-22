@@ -1,3 +1,5 @@
 <div class="map-container">
-  <div id="map" class="map js-map" data-access-token="<%= ENV.fetch('MAPBOX_ACCESS_TOKEN') %>" data-marker-icon="<%= asset_path('marker-icon') %>" data-markers="<%= @locations.to_json %>"></div>
+  <div id="map" class="map js-map" data-access-token="<%= ENV.fetch('MAPBOX_ACCESS_TOKEN') %>" data-marker-icon="<%= asset_path('marker-icon') %>"></div>
+  <div class="map-images">
+  </div>
 </div>

@@ -13,11 +13,11 @@ class Photo < ApplicationRecord
   end
 
   def thumbnail_url
-    GoogleStorage.signed_url(method: :get, name: thumbnail_name, expires: 5.minutes.from_now)
+    GoogleStorage.signed_url(method: :get, name: thumbnail_name, expires: 1.week.from_now)
   end
 
   def original_url
-    GoogleStorage.signed_url(method: :get, name: original_name, expires: 5.minutes.from_now)
+    GoogleStorage.signed_url(method: :get, name: original_name, expires: 1.week.from_now)
   end
 
   def thumbnail_put_url

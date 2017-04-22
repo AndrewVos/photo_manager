@@ -3,10 +3,11 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  resources :photos, only: %i(index create) do
+  resources :photos, only: %i(index create show) do
     post 'complete'
     collection do
       get 'map'
+      get 'map/locations', controller: :photos, action: :locations
     end
   end
 end

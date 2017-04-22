@@ -17,3 +17,5 @@
 //= require_tree .
 //= require exif
 //= require mapbox-gl
+//= require turf.min
+//= require jquery.visible
