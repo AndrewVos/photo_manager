@@ -22,37 +22,35 @@
         You have used <%= Megabytes.megabytes(@photos.sum(:size)) %>
       </div>
 
-      <div class="js-image">
-      </div>
+      <div class="js-image"></div>
+    </div>
 
-      <div class="year-list-group">
-        <% @year_photos.each do |year, photos| %>
-          <div class="year-list-group-item">
-            <a href="#">
-              <h2>
-                <%= year %>
-              </h2>
-            </a>
-            <% photos.each do |photo| %>
-              <a href="#" class="year-list-group-item-child">
-                <h3>
-                  <%= Date::MONTHNAMES[photo.date_time_original.month] %>
-                </h3>
-                <%= image_tag photo.thumbnail_url %>
-              </a>
-            <% end %>
-          </div>
-        <% end %>
+    <div class="col-xs-4">
+      <div class="albums">
+        <div class="list-group">
+          <% @years.each do |year, months| %>
+            <div class="list-group-item">
+              <%= link_to year, year: year %>
+              <div class="<%= year.to_s == params[:year] ? nil : 'hidden' %>">
+                <% months.each do |month, days| %>
+                  <div class="list-group-item">
+                    <%= link_to Date::MONTHNAMES[month], year: year, month: month %>
+                    <div class="list-group-item <%= year.to_s == params[:year] && month.to_s == params[:month] ? nil : 'hidden' %>">
+                      <% days.each do |day| %>
+                        <div>
+                          <%= link_to day, year: year, month: month, day: day %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
       </div>
-
-      <div class="list-group">
-        <% @models.each do |model| %>
-          <div class="list-group-item">
-            Model: <%= model %>
-          </div>
-        <% end %>
-      </div>
-
+    </div>
+    <div class="col-xs-8">
       <div class="row photos">
         <% @photos.each do |photo| %>
           <div class="photo col-xs-12 col-sm-6 col-md-4 col-lg-3">

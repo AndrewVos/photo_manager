@@ -6,6 +6,10 @@ $photo-padding: 10px;
   }
 }
 
+.albums {
+  font-size: 20px;
+}
+
 .year-list-group {
   .year-list-group-item:not(:last-of-type) {
     margin-bottom: $photo-padding;

@@ -1,17 +1,27 @@
 class PhotosController < ApplicationController
   def index
-    @photos = current_user.photos.complete.by_date
-    @models = @photos.complete.pluck("meta -> 'Model'").uniq
-    @years = years
-
-    @year_photos = current_user.photos.complete.select(
-      "DISTINCT ON(year, month) *, date_part('year', date_time_original) AS year, date_part('month', date_time_original) AS month"
-    ).order('year, month, RANDOM()')
-
-    @year_photos = @year_photos.each_with_object({}) do |photo, o|
-      o[photo.date_time_original.year] ||= []
-      o[photo.date_time_original.year] << photo
+    @back = params[:back]
+    @years = current_user.photos.complete.uniq.order('ddd').pluck(
+      "date_time_original::date AS ddd"
+    ).each_with_object({}) do |date, result|
+      result[date.year] ||= {}
+      result[date.year][date.month] ||= []
+      result[date.year][date.month] << date.day
     end
+
+    @photos = current_user.photos.complete.by_date
+    @photos = @photos.where("date_part('year', date_time_original) = ?", params[:year]) if params[:year]
+    @photos = @photos.where("date_part('month', date_time_original) = ?", params[:month]) if params[:month]
+    @photos = @photos.where("date_part('day', date_time_original) = ?", params[:day]) if params[:day]
+
+    # @year_photos = current_user.photos.complete.select(
+    #   "DISTINCT ON(year, month) *, date_part('year', date_time_original) AS year, date_part('month', date_time_original) AS month"
+    # ).order('year, month, RANDOM()')
+
+    # @year_photos = @year_photos.each_with_object({}) do |photo, o|
+    #   o[photo.date_time_original.year] ||= []
+    #   o[photo.date_time_original.year] << photo
+    # end
   end
 
   def create
